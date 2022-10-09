@@ -11,18 +11,39 @@ firebase.initializeApp({
 });
 
 const algoGet = (req = request,res = response) =>{
-
     const query = req.query;
     //tambien podemos desestructurar
     //const {q,nombre = 'No Name',apiKey} =req.query;
-
     res.json({
         msg:'get API - Controlador',
         query
     })
 }
 
-const algoPut = (req,res = response) =>{
+const crearCaraPost = (req=request,res=response) =>{
+    const { name, url } = req.body;
+    const options = {
+        method: 'POST',
+        url: "https://api.luxand.cloud/subject/v2",
+        qs: {"name":name,"store":"1"},
+        headers: {
+            'token': process.env.API_TOKEN
+        },
+        formData: { 
+            photo: url 
+        }
+    };
+    solicitud(options, function (error, response, body) {
+        if (error) throw new Error(error);
+        const nuevoBody = JSON.parse(body);
+        res.json({
+            msg:'post API - Controlador',
+            body: nuevoBody
+        })
+    });
+}
+
+const algoPut = (req=request,res = response) =>{
     //res.send('hello World');
 
     const id = req.params.id;
@@ -32,7 +53,7 @@ const algoPut = (req,res = response) =>{
         id
     })
 }
-const algoPost = (req,res = response) =>{
+const algoPost = (req=request,res = response) =>{
     //res.send('hello World');
    // const body = req.body;
     //podemos desustructurar
@@ -44,24 +65,19 @@ const algoPost = (req,res = response) =>{
         headers: {
             'token': process.env.API_TOKEN
         },
-        formData: { 
-            //photo: fs.createReadStream('photo.jpg') 
-            // or use URL 
+        formData: {
              photo: url 
         }
     };
     solicitud(options, function (error, response, body) {
-        //if (error) throw new Error(error);
-       // const { id ,name  } = body[0];
         const nuevoBody = JSON.parse(body);
         res.json({
             msg:'post API - Controlador',
             body: nuevoBody
         })
-        //console.log(body);
     });  
 }
-const notificacionesPost = (req=request,res=response) =>{
+const notificacionesPost = (req,res=response) =>{
     const { tittle, body ,token } = req.body;
     const payload = {
         notification: {
@@ -94,5 +110,6 @@ module.exports = {
     algoPost,
     algoPut,
     algoDelete,
-    notificacionesPost
+    notificacionesPost,
+    crearCaraPost
 }
