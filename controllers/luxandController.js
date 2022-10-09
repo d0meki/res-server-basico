@@ -52,11 +52,11 @@ const algoPost = (req,res = response) =>{
     };
     solicitud(options, function (error, response, body) {
         //if (error) throw new Error(error);
-        const { id ,name  } = body[0];
+       // const { id ,name  } = body[0];
+        const nuevoBody = JSON.parse(body);
         res.json({
             msg:'post API - Controlador',
-            id: id,
-            name: name
+            body: nuevoBody
         })
         //console.log(body);
     });  
