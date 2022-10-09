@@ -1,6 +1,15 @@
 const { response, request } = require('express')
 const solicitud = require("request");
 const fs = require("fs");
+const firebase = require("firebase-admin");
+const serviceAccount = require('../privateKey.json');
+
+//const firebaseToken = 'dt4Bvc-QQGSODXWYp2hUaV:APA91bH4pW9NJhwTgEHYvVZwmg8jc3iKYk8mXVLVcvMNmBPCklavnNe2lf-hUAz7c4asUSs_hAAmKZQIYF2ZbfICkBl3mSIeCAMTUvJpLF4s8fdFMx6nrCCJ5DoO26REhdDZXUuN6-qc';
+
+firebase.initializeApp({
+    credential: firebase.credential.cert(serviceAccount),
+});
+
 const algoGet = (req = request,res = response) =>{
 
     const query = req.query;
@@ -43,12 +52,36 @@ const algoPost = (req,res = response) =>{
     };
     solicitud(options, function (error, response, body) {
         //if (error) throw new Error(error);
+        const { id ,name  } = body[0];
         res.json({
             msg:'post API - Controlador',
-            body
+            id: id,
+            name: name
         })
         //console.log(body);
     });  
+}
+const notificacionesPost = (req=request,res=response) =>{
+    const { tittle, body ,token } = req.body;
+    const payload = {
+        notification: {
+            tittle: tittle,
+            body:body,
+            click_action: 'FLUTTER_NOTIFICATION_CLICK'
+        },
+        data:{
+            data1:'data1 value',
+            data2: 'data2 value'
+        }
+    };
+    const options  = { priority: 'high',timeToLive: 60 * 60 * 24,};
+
+    firebase.messaging().sendToDevice(token,payload,options).then(response=>{
+        res.json({
+            msg:'Se recibio su notificacion',
+            response
+        })
+    });
 }
 const algoDelete = (req,res = response) =>{
     //res.send('hello World');
@@ -60,5 +93,6 @@ module.exports = {
     algoGet,
     algoPost,
     algoPut,
-    algoDelete
+    algoDelete,
+    notificacionesPost
 }
