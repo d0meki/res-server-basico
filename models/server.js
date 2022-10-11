@@ -15,8 +15,21 @@ class Server {
 
     middlewares(){
         //CORS
-        this.app.use(cors())
-
+         // this.app.use(cors())
+        const whiteList = ['http://localhost:4200'];
+        this.app.use(cors({
+            origin : whiteList
+        }))
+        // const whiteList = ['http://localhost:4200'];
+        // const corsOptions = {
+        //     origin: function (origin, callback) {
+        //       if (whitelist.indexOf(origin) !== -1) {
+        //         callback(null, true)
+        //       } else {
+        //         callback(new Error('Not allowed by CORS'))
+        //       }
+        //     }
+        //   }
         // lectura y parseo del body
         this.app.use(express.json());
 
@@ -25,7 +38,7 @@ class Server {
     }
 
     routes(){
-        this.app.use(this.luxandPath,require('../routes/luxand'));
+        this.app.use(this.luxandPath, require('../routes/luxand'));
     }
 
     listen (){
