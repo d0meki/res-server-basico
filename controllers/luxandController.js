@@ -78,13 +78,15 @@ const algoPost = (req=request,res = response) =>{
     });  
 }
 const notificacionesPost = (req,res=response) =>{
-    const { tittle, body ,token } = req.body;
+    const { tittle, body ,token, image } = req.body;
     const payload = {
         notification: {
-            tittle: tittle,
+            title: tittle,
             body:body,
-            click_action: 'FLUTTER_NOTIFICATION_CLICK'
+            image:image,
+            //click_action: 'FLUTTER_NOTIFICATION_CLICK'
         },
+        //image:image,
         data:{
             data1:'data1 value',
             data2: 'data2 value'
